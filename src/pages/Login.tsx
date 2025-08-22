@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import logo from '../assets/logo.png'; // Ajuste o caminho conforme sua estrutura
+import logo from '../assets/logo.png'; 
 
 interface LoginProps {
   onLogin: (email: string, password: string) => Promise<void>;
-  onRegisterClick: () => void; // Nova prop para navegar para cadastro
+  onRegisterClick: () => void; 
   error?: string | null;
 }
 
@@ -15,7 +15,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick, error }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState('');
 
-  // Initialize Google OAuth
   useEffect(() => {
     const initializeGoogleAuth = () => {
       if (window.google) {
@@ -28,7 +27,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick, error }) => {
       }
     };
 
-    // Load Google script if not already loaded
     if (!window.google) {
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
@@ -40,7 +38,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick, error }) => {
     }
   }, []);
 
-  // Clear local error when global error changes
   useEffect(() => {
     if (!error) {
       setLocalError('');
@@ -52,7 +49,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick, error }) => {
       setIsLoading(true);
       setLocalError('');
 
-      // Send token to the correct backend route
       const result = await fetch('https://conectarback.discloud.app/auth/google/token', {
         method: 'POST',
         headers: {
@@ -71,12 +67,10 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick, error }) => {
       const data = await result.json();
 
       if (data.access_token) {
-        // Save token and user data
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('user', JSON.stringify(data.user));
         
-        // Trigger login in parent component
-        window.location.reload(); // Simple way to refresh auth state
+        window.location.reload();
       } else {
         throw new Error('Token de acesso não recebido');
       }
