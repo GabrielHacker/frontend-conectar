@@ -2,6 +2,64 @@
 
 Um sistema completo de gestão de clientes desenvolvido com React, TypeScript e Node.js, focado em usabilidade, performance e escalabilidade.
 
+## 🚀 Como Usar o Sistema
+
+### Acesso Recomendado (Produção)
+
+**🌐 Acesse diretamente**: https://conectar.discloud.app/
+
+Esta é a forma recomendada de usar o Conectar, pois:
+- ✅ Autenticação Google funciona completamente
+- ✅ Todas as funcionalidades disponíveis
+- ✅ Performance otimizada
+- ✅ Certificado SSL ativo
+- ✅ Backups automáticos
+
+### Execução Local (Desenvolvimento)
+
+⚠️ **Importante**: Ao executar localmente, a autenticação por Google **não funcionará** devido às configurações de domínio do OAuth.
+
+```bash
+# Clone o repositório
+git clone [url-do-repositorio]
+
+# Instale as dependências do backend
+cd backend
+npm install
+
+# Instale as dependências do frontend
+cd ../frontend
+npm install
+
+# Configure as variáveis de ambiente
+# Copie .env.example para .env e configure
+
+# Execute o backend (porta 3001)
+cd ../backend
+npm run dev
+
+# Execute o frontend (porta 3000)
+cd ../frontend
+npm start
+```
+
+**Limitações da execução local**:
+- 🚫 Login com Google indisponível
+- 🚫 Algumas integrações podem não funcionar
+- ⚠️ Apenas para desenvolvimento e testes básicos
+
+### Credenciais de Teste (Ambiente de Produção)
+
+Para testar o sistema completo em https://conectar.discloud.app/, use:
+
+**Usuário Admin**:
+- Email: admin@teste.com
+- Senha: admin123
+
+**Usuário Comum**:
+- Email: user@teste.com  
+- Senha: user123
+
 ## 🎨 Filosofia de Design
 
 ### Por que este Design?
@@ -158,9 +216,53 @@ UserContext    // Dados do usuário específico
 
 **Vantagem**: Performance melhor que Redux para este caso de uso.
 
+## 🛠️ Stack Tecnológica
 
+### Frontend
+- **React 18** com TypeScript
+- **Tailwind CSS** para estilização
+- **Context API** para gerenciamento de estado
+- **React Router** para navegação
+- **Axios** para requisições HTTP
 
- 
+### Backend
+- **Node.js** com Express
+- **TypeScript** para type safety
+- **Prisma ORM** para database
+- **JWT** para autenticação
+- **Google OAuth 2.0** para login social
+- **bcrypt** para hash de senhas
+
+### Infraestrutura
+- **Discloud** para hospedagem
+- **PostgreSQL** como banco de dados
+- **SSL/HTTPS** para segurança
+
+## 📱 Funcionalidades
+
+### Para Usuários Comuns
+- ✅ Gestão completa de clientes
+- ✅ Interface responsiva mobile
+- ✅ Filtros e busca avançada
+- ✅ Perfil editável
+- ✅ Login com Google
+
+### Para Administradores
+- ✅ Todas as funcionalidades de usuário
+- ✅ Gestão de usuários do sistema
+- ✅ Painel administrativo
+- ✅ Controle de permissões
+- ✅ Dashboard com métricas
+
+## 🔐 Segurança
+
+- 🛡️ Autenticação JWT + Google OAuth
+- 🛡️ Validação de dados no frontend e backend
+- 🛡️ Sanitização de inputs
+- 🛡️ Rate limiting
+- 🛡️ HTTPS obrigatório
+- 🛡️ Controle de acesso baseado em roles
+
 ## 📋 Conclusão
 
 O design do Conectar foi pensado para ser:
