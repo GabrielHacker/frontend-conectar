@@ -21,7 +21,7 @@ Esta é a forma recomendada de usar o Conectar, pois:
 
 ```bash
 # Clone o repositório
-git clone [[url-do-repositorio](https://github.com/GabrielHacker/frontend-conectar.git)]
+git clone https://github.com/GabrielHacker/frontend-conectar.git
 
 
 # Instale as dependências do frontend
