@@ -28,12 +28,7 @@ git clone https://github.com/GabrielHacker/frontend-conectar.git
 cd ../frontend
 npm install
 
-# Configure as variáveis de ambiente
-# Copie .env.example para .env e configure
-
-# Execute o backend (porta 3001)
-cd ../backend
-npm run dev
+# Configure a variável de ambiente
 
 # Execute o frontend (porta 3000)
 cd ../frontend
