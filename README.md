@@ -214,7 +214,6 @@ UserContext    // Dados do usuário específico
 - 🛡️ Autenticação JWT + Google OAuth
 - 🛡️ Validação de dados no frontend e backend
 - 🛡️ Sanitização de inputs
-- 🛡️ Rate limiting
 - 🛡️ HTTPS obrigatório
 - 🛡️ Controle de acesso baseado em roles
 
