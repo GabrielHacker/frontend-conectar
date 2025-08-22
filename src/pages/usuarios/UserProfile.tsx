@@ -9,6 +9,9 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ currentUser, onLogout, onUserUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  
+  // Estados para edição de perfil
   const [formData, setFormData] = useState({
     name: currentUser.name,
     email: currentUser.email,
@@ -16,6 +19,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ currentUser, onLogout, onUser
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Estados para mudança de senha
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +66,62 @@ const UserProfile: React.FC<UserProfileProps> = ({ currentUser, onLogout, onUser
     setSuccess('');
   };
 
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validações
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError('As senhas não coincidem');
+      return;
+    }
+    
+    if (passwordData.newPassword.length < 6) {
+      setPasswordError('A nova senha deve ter pelo menos 6 caracteres');
+      return;
+    }
+
+    setIsPasswordLoading(true);
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    try {
+      const response = await usersAPI.updatePassword(currentUser.id, {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
+
+      if (response.message === 'Senha atualizada com sucesso') {
+        setPasswordSuccess('Senha atualizada com sucesso!');
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+        setIsChangingPassword(false);
+        
+        // Limpar mensagem após 3 segundos
+        setTimeout(() => setPasswordSuccess(''), 3000);
+      } else {
+        setPasswordError(response.message);
+      }
+    } catch (error: any) {
+      setPasswordError(error.response?.data?.message || 'Erro ao atualizar senha');
+    } finally {
+      setIsPasswordLoading(false);
+    }
+  };
+
+  const handlePasswordCancel = () => {
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    });
+    setIsChangingPassword(false);
+    setPasswordError('');
+    setPasswordSuccess('');
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -82,17 +151,30 @@ const UserProfile: React.FC<UserProfileProps> = ({ currentUser, onLogout, onUser
             </div>
           </div>
           
-          {!isEditing && (
-            <button 
-              onClick={() => setIsEditing(true)} 
-              className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-sm"
-              disabled={isLoading}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-              </svg>
-              <span>Editar Perfil</span>
-            </button>
+          {!isEditing && !isChangingPassword && (
+            <div className="flex space-x-3">
+              <button 
+                onClick={() => setIsChangingPassword(true)} 
+                className="flex items-center space-x-2 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors shadow-sm"
+                disabled={isLoading}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <span>Alterar Senha</span>
+              </button>
+              
+              <button 
+                onClick={() => setIsEditing(true)} 
+                className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-sm"
+                disabled={isLoading}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                <span>Editar Perfil</span>
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -126,10 +208,123 @@ const UserProfile: React.FC<UserProfileProps> = ({ currentUser, onLogout, onUser
         </div>
       )}
 
+      {passwordSuccess && (
+        <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center space-x-2">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>{passwordSuccess}</span>
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        {isEditing ? (
-          /* Editing Mode */
+        {isChangingPassword ? (
+          /* Password Change Mode */
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">Alterar Senha</h3>
+              <div className="flex items-center space-x-2">
+                <button 
+                  type="button" 
+                  onClick={handlePasswordCancel} 
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  disabled={isPasswordLoading}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  onClick={handlePasswordSubmit}
+                  disabled={isPasswordLoading} 
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPasswordLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Alterando...</span>
+                    </div>
+                  ) : (
+                    'Alterar Senha'
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Security Warning */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <div className="flex">
+                <svg className="w-5 h-5 text-yellow-400 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
+                </svg>
+                <div>
+                  <h3 className="text-sm font-medium text-yellow-800">Alteração de senha</h3>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    Por segurança, você precisa informar sua senha atual para definir uma nova senha.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {passwordError && (
+              <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                {passwordError}
+              </div>
+            )}
+            
+            <form onSubmit={handlePasswordSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 gap-6">
+                <div>
+                  <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                    Senha Atual *
+                  </label>
+                  <input
+                    id="currentPassword"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                    required
+                    placeholder="Digite sua senha atual"
+                    disabled={isPasswordLoading}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                    Nova Senha *
+                  </label>
+                  <input
+                    id="newPassword"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    required
+                    placeholder="Mínimo 6 caracteres"
+                    disabled={isPasswordLoading}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                    Confirmar Nova Senha *
+                  </label>
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                    required
+                    placeholder="Digite a nova senha novamente"
+                    disabled={isPasswordLoading}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        ) : isEditing ? (
+          /* Profile Editing Mode */
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900">Editar Informações</h3>
@@ -271,6 +466,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ currentUser, onLogout, onUser
             <h3 className="text-lg font-medium text-blue-900 mb-2">Informações Importantes</h3>
             <ul className="text-blue-800 space-y-1">
               <li>• Você pode atualizar seu nome e email a qualquer momento</li>
+              <li>• Use uma senha forte com pelo menos 6 caracteres</li>
               <li>• Seu tipo de usuário é definido pelo administrador</li>
               <li>• Em caso de problemas, entre em contato com o suporte</li>
               <li>• Suas alterações são sincronizadas automaticamente</li>

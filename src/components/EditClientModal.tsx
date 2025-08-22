@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { clientsAPI, CreateClientDto } from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { Client, clientsAPI } from '../services/api';
 
-interface CreateClientModalProps {
+interface EditClientModalProps {
   isOpen: boolean;
+  client: Client | null;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-interface CreateClientForm {
+interface EditClientForm {
   razaoSocial: string;
   cnpj: string;
   nomeNaFachada: string;
@@ -23,8 +24,8 @@ interface CreateClientForm {
   observacoes?: string;
 }
 
-const CreateClientModal: React.FC<CreateClientModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [formData, setFormData] = useState<CreateClientForm>({
+const EditClientModal: React.FC<EditClientModalProps> = ({ isOpen, client, onClose, onSuccess }) => {
+  const [formData, setFormData] = useState<EditClientForm>({
     razaoSocial: '',
     cnpj: '',
     nomeNaFachada: '',
@@ -42,6 +43,28 @@ const CreateClientModal: React.FC<CreateClientModalProps> = ({ isOpen, onClose, 
   
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Preencher formulário quando cliente for selecionado
+  useEffect(() => {
+    if (client) {
+      setFormData({
+        razaoSocial: client.razaoSocial || '',
+        cnpj: client.cnpj || '',
+        nomeNaFachada: client.nomeNaFachada || '',
+        rua: client.rua || '',
+        numero: client.numero || '',
+        bairro: client.bairro || '',
+        cidade: client.cidade || '',
+        estado: client.estado || '',
+        cep: client.cep || '',
+        telefone: client.telefone || '',
+        email: client.email || '',
+        status: client.status || 'ativo',
+        observacoes: client.observacoes || ''
+      });
+      setErrors({});
+    }
+  }, [client]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -79,21 +102,21 @@ const CreateClientModal: React.FC<CreateClientModalProps> = ({ isOpen, onClose, 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    if (!client || !validateForm()) {
       return;
     }
 
     setIsLoading(true);
     
     try {
-      const result = await clientsAPI.create(formData);
-      console.log('Cliente criado:', result);
+      const result = await clientsAPI.update(client.id, formData);
+      console.log('Cliente atualizado:', result);
       onSuccess();
       handleClose();
     } catch (error: any) {
-      console.error('Erro ao criar cliente:', error);
+      console.error('Erro ao atualizar cliente:', error);
       setErrors({ 
-        submit: error.response?.data?.message || error.message || 'Erro ao criar cliente' 
+        submit: error.response?.data?.message || error.message || 'Erro ao atualizar cliente' 
       });
     } finally {
       setIsLoading(false);
@@ -120,7 +143,7 @@ const CreateClientModal: React.FC<CreateClientModalProps> = ({ isOpen, onClose, 
     onClose();
   };
 
-  const handleInputChange = (field: keyof CreateClientForm, value: string) => {
+  const handleInputChange = (field: keyof EditClientForm, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Limpar erro do campo quando usuário começar a digitar
@@ -152,14 +175,14 @@ const CreateClientModal: React.FC<CreateClientModalProps> = ({ isOpen, onClose, 
     return value;
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !client) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">Novo Cliente</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Editar Cliente</h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -416,7 +439,7 @@ const CreateClientModal: React.FC<CreateClientModalProps> = ({ isOpen, onClose, 
               disabled={isLoading}
               className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Criando...' : 'Criar Cliente'}
+              {isLoading ? 'Salvando...' : 'Salvar Alterações'}
             </button>
           </div>
         </form>
@@ -425,4 +448,4 @@ const CreateClientModal: React.FC<CreateClientModalProps> = ({ isOpen, onClose, 
   );
 };
 
-export default CreateClientModal;
+export default EditClientModal;

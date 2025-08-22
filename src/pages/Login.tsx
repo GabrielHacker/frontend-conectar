@@ -404,19 +404,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick, error }) => {
             </span>
           </div>
 
-          {/* Test Credentials */}
-          <div style={{
-            marginTop: '20px',
-            padding: '12px',
-            backgroundColor: '#f0f9ff',
-            borderRadius: '6px',
-            fontSize: '12px',
-            color: '#0369a1',
-          }}>
-            <div style={{ fontWeight: '600', marginBottom: '4px' }}>Credenciais de teste:</div>
-            <div>Email: admin@conectar.com</div>
-            <div>Senha: 123456</div>
-          </div>
         </div>
       </div>
     </div>

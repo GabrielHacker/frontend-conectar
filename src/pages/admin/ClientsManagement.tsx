@@ -268,9 +268,6 @@ const ClientsManagement: React.FC<ClientsManagementProps> = ({ currentUser }) =>
                 {isLoadingClients ? 'Carregando...' : `Total de ${clients.length} cliente(s) encontrado(s)`}
               </p>
             </div>
-            <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 font-medium">
-              Novo Cliente
-            </button>
           </div>
         </div>
 

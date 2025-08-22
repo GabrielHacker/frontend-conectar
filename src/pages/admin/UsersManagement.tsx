@@ -492,7 +492,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUser }) => {
           setEditingUser(null);
         }}
         onSuccess={handleEditSuccess}
-        onUserUpdate={updateUser}
+      //  onUserUpdate={updateUser}
       />
     </main>
   );
