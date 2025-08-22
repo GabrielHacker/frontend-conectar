@@ -45,20 +45,18 @@ npm start
 
 **Limitações da execução local**:
 - 🚫 Login com Google indisponível
-- 🚫 Algumas integrações podem não funcionar
-- ⚠️ Apenas para desenvolvimento e testes básicos
 
 ### Credenciais de Teste (Ambiente de Produção)
 
 Para testar o sistema completo em https://conectar.discloud.app/, use:
 
 **Usuário Admin**:
-- Email: admin@teste.com
-- Senha: admin123
+- Email: joao@conectar.com
+- Senha: 123456
 
 **Usuário Comum**:
-- Email: user@teste.com  
-- Senha: user123
+- Email: ana@conectar.com  
+- Senha: 123456
 
 ## 🎨 Filosofia de Design
 
@@ -108,26 +106,7 @@ src/
 └── pages/              # Páginas específicas por role
 ```
 
-**Vantagens**:
-- ✅ Desenvolvimento mais rápido
-- ✅ Manutenção simplificada
-- ✅ Consistência visual garantida
-- ✅ Testes mais eficientes
 
-#### 5. **UX Orientada por Dados**
-
-##### Loading States Inteligentes
-```typescript
-// Exemplo de loading state informativo
-{isLoading ? (
-  <div className="flex items-center justify-center py-12">
-    <div className="animate-spin rounded-full h-8 w-8 border-2 border-green-500"></div>
-    <span className="ml-3 text-gray-600">Carregando clientes...</span>
-  </div>
-) : (
-  // Conteúdo
-)}
-```
 
 ##### Feedback Visual Imediato
 - **Estados de sucesso**: Confirmações verdes discretas
@@ -157,22 +136,6 @@ const UserDashboard = () => (
 - Reduz confusão cognitiva
 - Melhora segurança (usuários veem apenas o que podem acessar)
 - Personaliza experiência por tipo de usuário
-
-#### 7. **Microinterações Significativas**
-
-```typescript
-// Exemplo de microinteração no toggle de senha
-const [showPassword, setShowPassword] = useState(false);
-
-<button 
-  onClick={() => setShowPassword(!showPassword)}
-  className="hover:bg-green-100 transition-colors duration-200"
->
-  {showPassword ? <EyeOff /> : <Eye />}
-</button>
-```
-
-**Por que importa**: Pequenas animações e transições fazem a interface parecer mais responsiva e profissional.
 
 ### Decisões Técnicas de Design
 
