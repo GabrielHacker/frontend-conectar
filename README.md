@@ -188,17 +188,9 @@ UserContext    // Dados do usuário específico
 - **React Router** para navegação
 - **Axios** para requisições HTTP
 
-### Backend
-- **Node.js** com Express
-- **TypeScript** para type safety
-- **Prisma ORM** para database
-- **JWT** para autenticação
-- **Google OAuth 2.0** para login social
-- **bcrypt** para hash de senhas
-
 ### Infraestrutura
 - **Discloud** para hospedagem
-- **PostgreSQL** como banco de dados
+- **SQLITE** como banco de dados
 - **SSL/HTTPS** para segurança
 
 ## 📱 Funcionalidades
@@ -226,20 +218,3 @@ UserContext    // Dados do usuário específico
 - 🛡️ HTTPS obrigatório
 - 🛡️ Controle de acesso baseado em roles
 
-## 📋 Conclusão
-
-O design do Conectar foi pensado para ser:
-
-1. **Escalável**: Arquitetura modular que cresce com o negócio
-2. **Confiável**: Testes abrangentes garantem qualidade
-3. **Usável**: Interface intuitiva para diferentes perfis de usuário
-4. **Mantível**: Código limpo e bem documentado
-5. **Performático**: Otimizações que melhoram experiência do usuário
-
-Cada decisão de design, desde a escolha de cores até a arquitetura de testes, foi tomada considerando o usuário final e a sustentabilidade do projeto a longo prazo.
-
----
-
-*"Design não é apenas como algo parece. Design é como algo funciona."* - Steve Jobs
-
-Esta filosofia guiou cada aspecto do desenvolvimento do Conectar, resultando em um sistema que não apenas resolve problemas, mas cria uma experiência positiva para quem o usa.
