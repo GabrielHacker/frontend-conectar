@@ -43,7 +43,7 @@ npm start
 Para testar o sistema completo em https://conectar.discloud.app/, use:
 
 **Usuário Admin**:
-- Email: joao@conectar.com
+- Email: pedro@conectar.com
 - Senha: 123456
 
 **Usuário Comum**:
